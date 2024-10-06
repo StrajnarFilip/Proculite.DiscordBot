@@ -1,10 +1,12 @@
 using Proculite.DiscordBot.Data;
+using Proculite.DiscordBot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DiscordBotContext>();
+builder.Services.AddSingleton<DiscordService>();
 
 var app = builder.Build();
 
