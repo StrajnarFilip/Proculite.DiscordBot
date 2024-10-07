@@ -1,5 +1,10 @@
 <form asp-action="AddMessageByLink" method="post">
-    <input type="text" name="messageLink">
-    <input type="checkbox" name="onlyOne">
-    <input type="submit" value="Add message">
+    <div class="form-group">
+        <input type="text" name="messageLink" class="form-control">
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="onlyOne" class="form-check-input">
+    </div>
+
+    <input type="submit" value="Add message" class="btn btn-primary">
 </form>
