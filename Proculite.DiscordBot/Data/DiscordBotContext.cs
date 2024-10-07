@@ -15,7 +15,7 @@ namespace Proculite.DiscordBot.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(DatabasePath);
+            optionsBuilder.UseSqlite($"Data Source={DatabasePath}");
         }
 
         private string DatabasePath
