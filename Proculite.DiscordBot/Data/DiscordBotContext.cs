@@ -1,11 +1,15 @@
 namespace Proculite.DiscordBot.Data
 {
     using Microsoft.EntityFrameworkCore;
+    using Proculite.DiscordBot.Models;
 
     public class DiscordBotContext : DbContext
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<DiscordBotContext> _logger;
+
+        public DbSet<AssignRoleMessage> AssignRoleMessages { get; set; }
+        public DbSet<ReactionRole> ReactionRoles { get; set; }
 
         public DiscordBotContext(IConfiguration configuration, ILogger<DiscordBotContext> logger)
         {
