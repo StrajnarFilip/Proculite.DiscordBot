@@ -60,18 +60,46 @@ namespace Proculite.DiscordBot.Services
 
         public async Task AddRoleAssignmentMessageByMessageLink(string messageLink, bool chooseOne)
         {
-            string[] parts = messageLink.Split("/").TakeLast(3).ToArray();
+            string[] allParts = messageLink.Split("/");
+            if (allParts.Length < 3)
+            {
+                _logger.LogWarning(
+                    "Message link {MessageLink} contains less than 3 parts.",
+                    messageLink
+                );
+                _logger.LogInformation("Adding new role assignment message is aborted.");
+                return;
+            }
+            string[] parts = allParts.TakeLast(3).ToArray();
 
-            string guildId = parts[0];
-            string channelId = parts[1];
-            string messageId = parts[2];
+            if (parts.Any(part => ulong.TryParse(part, out _)))
+            {
+                _logger.LogWarning("Message link part is not a number.");
+                return;
+            }
+
+            if (parts.Any(part => part.Length < 18))
+            {
+                _logger.LogWarning("Message link part is too short to be valid ID.");
+                return;
+            }
+
+            ulong guildId = ulong.Parse(parts[0]);
+            ulong channelId = ulong.Parse(parts[1]);
+            ulong messageId = ulong.Parse(parts[2]);
+
+            if (!_discordService.GuildMessageExists(guildId, channelId, messageId))
+            {
+                _logger.LogWarning("Message with this ID does not exist: {MessageId}.", messageId);
+                return;
+            }
 
             AssignRoleMessage assignRoleMessage = new AssignRoleMessage
             {
                 ChooseOne = chooseOne,
-                MessageGuildId = ulong.Parse(guildId),
-                MessageChannelId = ulong.Parse(channelId),
-                MessageId = ulong.Parse(messageId)
+                MessageGuildId = guildId,
+                MessageChannelId = channelId,
+                MessageId = messageId
             };
 
             await _discordBotContext.AssignRoleMessages.AddAsync(assignRoleMessage);
