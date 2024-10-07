@@ -40,16 +40,39 @@ namespace Proculite.DiscordBot.Services
                 .Append(this.DiscordClient.CurrentUser.Discriminator)
                 .ToString();
 
-        public async Task<string> GetGuildMessageContent(
+        public async Task<string?> GetGuildMessageContent(
             ulong guildId,
             ulong channelId,
             ulong messageId
         )
         {
-            IMessage message = await DiscordClient
-                .GetGuild(guildId)
-                .GetTextChannel(channelId)
-                .GetMessageAsync(messageId);
+            SocketGuild? guild = DiscordClient.GetGuild(guildId);
+            if (guild is null)
+            {
+                _logger.LogWarning(
+                    "Attempting to get guild that isn't accessible or doesn't exist: {GuildId}",
+                    guildId
+                );
+                return null;
+            }
+
+            SocketTextChannel? textChannel = guild.GetTextChannel(channelId);
+            if (textChannel is null)
+            {
+                _logger.LogWarning(
+                    "Attempting to get channel that isn't accessible or doesn't exist: {ChannelId}",
+                    channelId
+                );
+                return null;
+            }
+
+            IMessage? message = await textChannel.GetMessageAsync(messageId);
+
+            if (message is null)
+            {
+                _logger.LogWarning("Message with ID {MessageId} has not been found.", messageId);
+                return null;
+            }
             return message.Content;
         }
 
