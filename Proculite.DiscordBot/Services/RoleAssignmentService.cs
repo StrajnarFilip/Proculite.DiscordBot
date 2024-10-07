@@ -50,5 +50,24 @@ namespace Proculite.DiscordBot.Services
                 GuildName = guildName
             };
         }
+
+        public async Task AddRoleAssignmentMessageByMessageLink(string messageLink, bool chooseOne)
+        {
+            string[] parts = messageLink.Split("/").TakeLast(3).ToArray();
+
+            string guildId = parts[0];
+            string channelId = parts[1];
+            string messageId = parts[2];
+
+            AssignRoleMessage assignRoleMessage = new AssignRoleMessage{
+                ChooseOne = chooseOne,
+                MessageGuildId = ulong.Parse(guildId),
+                MessageChannelId = ulong.Parse(channelId),
+                MessageId = ulong.Parse(messageId)
+            };
+            
+            await _discordBotContext.AssignRoleMessages.AddAsync(assignRoleMessage);
+            await _discordBotContext.SaveChangesAsync();
+        }
     }
 }
