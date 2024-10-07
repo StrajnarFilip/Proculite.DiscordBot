@@ -22,21 +22,28 @@ namespace Proculite.DiscordBot.Services
 
         public IEnumerable<AssignRoleModel> GetAllAssignRoleMessages()
         {
-            return _discordBotContext.AssignRoleMessages.Select(AssignRoleMessageToAssignRoleModel);
+            return _discordBotContext
+                .AssignRoleMessages.Select(AssignRoleMessageToAssignRoleModel)
+                .Where(message => message is not null);
         }
 
-        public AssignRoleModel AssignRoleMessageToAssignRoleModel(
+        public AssignRoleModel? AssignRoleMessageToAssignRoleModel(
             AssignRoleMessage assignRoleMessage
         )
         {
             // TODO: This async operation is execute synchronously.
-            string messageContents = _discordService
+            string? messageContents = _discordService
                 .GetGuildMessageContent(
                     assignRoleMessage.MessageGuildId,
                     assignRoleMessage.MessageChannelId,
                     assignRoleMessage.MessageId
                 )
                 .Result;
+
+            if (messageContents is null)
+            {
+                return null;
+            }
 
             string guildName = _discordService.GetGuildName(assignRoleMessage.MessageGuildId);
             return new AssignRoleModel
@@ -59,13 +66,14 @@ namespace Proculite.DiscordBot.Services
             string channelId = parts[1];
             string messageId = parts[2];
 
-            AssignRoleMessage assignRoleMessage = new AssignRoleMessage{
+            AssignRoleMessage assignRoleMessage = new AssignRoleMessage
+            {
                 ChooseOne = chooseOne,
                 MessageGuildId = ulong.Parse(guildId),
                 MessageChannelId = ulong.Parse(channelId),
                 MessageId = ulong.Parse(messageId)
             };
-            
+
             await _discordBotContext.AssignRoleMessages.AddAsync(assignRoleMessage);
             await _discordBotContext.SaveChangesAsync();
         }
