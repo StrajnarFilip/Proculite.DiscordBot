@@ -39,5 +39,18 @@ namespace Proculite.DiscordBot.Services
                 .Append("#")
                 .Append(this.DiscordClient.CurrentUser.Discriminator)
                 .ToString();
+
+        public async Task<string> GetGuildMessageContent(
+            ulong guildId,
+            ulong channelId,
+            ulong messageId
+        )
+        {
+            IMessage message = await DiscordClient
+                .GetGuild(guildId)
+                .GetTextChannel(channelId)
+                .GetMessageAsync(messageId);
+            return message.Content;
+        }
     }
 }
