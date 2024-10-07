@@ -80,5 +80,18 @@ namespace Proculite.DiscordBot.Services
         {
             return DiscordClient.GetGuild(guildId).Name;
         }
+
+        public bool GuildMessageExists(ulong guildId, ulong channelId, ulong messageId)
+        {
+            SocketGuild? guild = DiscordClient.GetGuild(guildId);
+            if (guild is null)
+                return false;
+
+            SocketTextChannel? textChannel = guild.GetTextChannel(channelId);
+            if (textChannel is null)
+                return false;
+
+            return textChannel.GetMessageAsync(messageId).Result != null;
+        }
     }
 }
