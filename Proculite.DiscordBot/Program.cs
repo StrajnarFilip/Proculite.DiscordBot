@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<DiscordBotContext>();
+builder.Services.AddSingleton<DiscordBotContext>();
 builder.Services.AddSingleton<DiscordService>();
 builder.Services.AddSingleton<RoleAssignmentService>();
 
