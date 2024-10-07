@@ -3,6 +3,7 @@ namespace Proculite.DiscordBot.Models
     public class AssignRoleMessage
     {
         public long Id { get; set; }
+
         /// <summary>
         /// If true, only one role can be assigned from
         /// reaction to this message.
