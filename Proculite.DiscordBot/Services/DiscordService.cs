@@ -1,3 +1,4 @@
+using System.Text;
 using Discord;
 using Discord.WebSocket;
 
@@ -31,5 +32,12 @@ namespace Proculite.DiscordBot.Services
             await DiscordClient.LoginAsync(TokenType.Bot, botToken);
             await DiscordClient.StartAsync();
         }
+
+        public string BotName =>
+            new StringBuilder()
+                .Append(this.DiscordClient.CurrentUser.Username)
+                .Append("#")
+                .Append(this.DiscordClient.CurrentUser.Discriminator)
+                .ToString();
     }
 }
