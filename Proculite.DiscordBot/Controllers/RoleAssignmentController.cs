@@ -30,12 +30,13 @@ namespace Proculite.DiscordBot.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMessageByLink(
             [FromForm] string messageLink,
-            [FromForm] bool onlyOne
+            [FromForm] string onlyOne
         )
         {
+            _logger.LogInformation(onlyOne);
             await this._roleAssignmentService.AddRoleAssignmentMessageByMessageLink(
                 messageLink,
-                onlyOne
+                onlyOne == "on"
             );
             return RedirectToAction("Index");
         }
