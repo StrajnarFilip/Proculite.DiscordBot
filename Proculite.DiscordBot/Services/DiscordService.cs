@@ -52,5 +52,10 @@ namespace Proculite.DiscordBot.Services
                 .GetMessageAsync(messageId);
             return message.Content;
         }
+
+        public string GetGuildName(ulong guildId)
+        {
+            return DiscordClient.GetGuild(guildId).Name;
+        }
     }
 }
